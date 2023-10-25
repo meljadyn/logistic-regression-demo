@@ -1,9 +1,12 @@
 import streamlit as st
 import pandas as pd
+import seaborn as sns
 import numpy as np
 import matplotlib.pyplot as plt
 from sklearn.model_selection import train_test_split
 from sklearn.linear_model import LogisticRegression
+from sklearn.tree import DecisionTreeClassifier
+from sklearn.ensemble import RandomForestClassifier
 from sklearn.metrics import confusion_matrix, accuracy_score
 from sklearn.preprocessing import StandardScaler
 
@@ -11,7 +14,7 @@ from sklearn.preprocessing import StandardScaler
 # LOADING IN DATA
 # ---
 
-data = pd.read_csv("data/diabetes_health_indicators.csv")
+data = pd.read_csv("data/diabetes_full_health_indicators.csv")
 
 
 # ---
@@ -20,7 +23,7 @@ data = pd.read_csv("data/diabetes_health_indicators.csv")
 
 # Convert float types to int
 data = data.astype({
-    "Diabetes_binary": "int32",
+    "Diabetes_012": "int32",
     "HighBP": "int32",
     "HighChol": "int32",
     "CholCheck": "int32",
@@ -50,17 +53,24 @@ data = data.astype({
 # st.write("Check for null values")
 # st.write(data.isnull().sum())
 
+# Scale
+ss = StandardScaler()
+data['BMI'] = ss.fit_transform(data[['BMI']])
+data['GenHlth'] = ss.fit_transform(data[['GenHlth']])
+data['MentHlth'] = ss.fit_transform(data[['MentHlth']])
+data['PhysHlth'] = ss.fit_transform(data[['MentHlth']])
+data['Age'] = ss.fit_transform(data[['Age']])
+data['Education'] = ss.fit_transform(data[['Education']])
+data['Income'] = ss.fit_transform(data[['Income']])
+
+
 # Separate input (X) values and output (Y) values
 x = data.iloc[:, 1:].values
 y = data.iloc[:, 0].values
 
+
 # Split into training and test sets
 x_train, x_test, y_train, y_test = train_test_split(x, y, test_size=0.2)
-
-# Scale
-scaler = StandardScaler()
-x_train = scaler.fit_transform(x_train)
-x_test = scaler.transform(x_test)
 
 # ---
 # USER INTERFACE
@@ -102,11 +112,28 @@ x_test = scaler.transform(x_test)
 
 
 # ---
+# GRAPHS
+# ---
+corr = data.corr()
+st.write(corr)
+
+
+fig, ax = plt.subplots()
+sns.heatmap(data.corr(), ax=ax)
+st.write(fig)
+
+
+
+# ---
 # LOGISTIC REGRESSION
 # ---
 
 classifier = LogisticRegression()
+# classifier = KNeighborsClassifier()
+# classifier = DecisionTreeClassifier()
+# classifier = RandomForestClassifier()
 classifier.fit(x_train, y_train)
+
 
 # classifier.predict([[
 #     high_bp, high_chol, chol_check, bmi, smoker, stroke, heart_disease, phys_activity, fruits, veggies, alcohol,
