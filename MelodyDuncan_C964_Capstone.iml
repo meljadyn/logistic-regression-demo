@@ -6,4 +6,9 @@
     <orderEntry type="jdk" jdkName="Python 3.9 (MelodyDuncan_C964_Capstone)" jdkType="Python SDK" />
     <orderEntry type="sourceFolder" forTests="false" />
   </component>
+  <component name="PackageRequirementsSettings">
+    <option name="versionSpecifier" value="Don't specify version" />
+    <option name="removeUnused" value="true" />
+    <option name="keepMatchingSpecifier" value="false" />
+  </component>
 </module>
