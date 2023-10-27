@@ -61,7 +61,7 @@ class RegressionModel:
             "MentHlth": "Poor Mental Health",
             "PhysHlth": "Poor Physical Health",
             "DiffWalk": "Difficulty Walking",
-            "Sex": "Male",
+            "Sex": "Sex",
             "Age": "Age",
             "Education": "Education",
             "Income": "Income",
@@ -79,73 +79,94 @@ class RegressionModel:
         self.x_train = self.scaler.fit_transform(self.x_train)
         self.x_test = self.scaler.transform(self.x_test)
 
+        # Build classifier
+        self.classifier = LogisticRegression()
+        self.classifier.fit(self.x_train, self.y_train)
+
     def predict_data(self, given_attributes):
         # Scale given attributes
         scaled_attributes = self.scaler.transform([given_attributes])
 
-        # Build Model
-        classifier = LogisticRegression()
-        classifier.fit(self.x_train, self.y_train)
-
         # Predict
-        prediction = classifier.predict(scaled_attributes)
+        prediction = self.classifier.predict(scaled_attributes)
 
+        # Print to UI
         if prediction == 0:
             st.info("It is likely that this patient does not have pre-diabetes or diabetes")
         else:
             st.info("It is likely that this patient has either pre-diabetes or diabetes")
 
     def predict_test_data(self):
-        classifier = LogisticRegression()
-        classifier.fit(self.x_train, self.y_train)
-
-        y_pred = classifier.predict(self.x_test)
+        # Make the prediction
+        prediction = self.classifier.predict(self.x_test)
 
         # DRAW CONFUSION MATRIX
         with st.expander("Confusion Matrix on Test Data"):
             # CONFUSION MATRIX -- BASE MATRIX
-            plt.subplots(figsize=(11, 9))                           # Create underyling matplot
-            confusion = confusion_matrix(self.y_test, y_pred)       # Create confusion matrix
-            cmap = sns.diverging_palette(230, 20, as_cmap=True)
-            plot = sns.heatmap(confusion, annot=True, fmt='d', cmap=cmap)    # Plot with Seaborn's heatmap
+            plt.subplots(figsize=(11, 9))  # Create underlying matplot
+            confusion = confusion_matrix(self.y_test, prediction)  # Create confusion matrix
+            cmap = sns.diverging_palette(230, 20, as_cmap=True)  # Create custom colors
+            plot = sns.heatmap(confusion, annot=True, fmt='d', cmap=cmap,
+                               linewidths=.5)  # Plot with Seaborn's heatmap
 
             # CONFUSION MATRIX -- LABELS
             plot.set_title("Diabetes Diagnosis: Actual Diagnosis vs. Predicted Diagnosis")  # Title the chart
 
-            plot.set_xlabel("Predicted Diagnosis")                  # Label the x-axis
+            plot.set_xlabel("Predicted Diagnosis")  # Label the x-axis
             plot.xaxis.set_ticklabels(["No diabetes", "Diabetes"])  # Label each x-axis option
 
-            plot.set_ylabel("Actual Diagnosis")                     # Label the y-axis
+            plot.set_ylabel("Actual Diagnosis")  # Label the y-axis
             plot.yaxis.set_ticklabels(["No diabetes", "Diabetes"])  # Label each y-axis option
 
             # CONFUSION MATRIX -- WRITE TO UI
-            st.pyplot(plot.get_figure())                            # Print matrix to frontend
-            st.write(accuracy_score(self.y_test, y_pred))           # Print the accuracy score value
+            st.pyplot(plot.get_figure())  # Print matrix to frontend
+            st.metric("Accuracy", format(accuracy_score(self.y_test, prediction), ".1%"))  # Print the accuracy percent
 
     def draw_visualizations(self):
         # DRAW CORRELATION MATRIX
         with st.expander("Correlation Matrix"):
             # CORRELATION MATRIX -- BASE MATRIX
-            plt.subplots(figsize=(11, 9))                                     # Create underlying matplot
-            corr = self.data.corr()                                           # Create correlation matrix
+            plt.subplots(figsize=(11, 9))  # Create underlying matplot
+            corr = self.data.corr()  # Create correlation matrix
 
             # CORRELATION MATRIX -- STYLING
-            mask = np.triu(np.ones_like(corr, dtype=bool))              # Create mask for top right triangle
+            mask = np.triu(np.ones_like(corr, dtype=bool))  # Create mask for top right triangle
             cmap = sns.diverging_palette(230, 20, as_cmap=True)  # Create custom color palette
 
             # CORRELATION MATRIX -- DRAW FINAL MATRIX
-            correlation_mat = sns.heatmap(corr, mask=mask, cmap=cmap,          # Draw the seaborn heatmap
+            correlation_mat = sns.heatmap(corr, mask=mask, cmap=cmap,  # Draw the seaborn heatmap
                                           center=0, linewidths=.5)
+
+            # CORRELATION MATRIX -- LABELING
+            correlation_mat.set_title("Correlation Between Attributes in Dataset")
 
             # CORRELATION MATRIX -- WRITE TO UI
             st.pyplot(correlation_mat.get_figure())
 
         # DRAW DISTRIBUTION CHARTS
         with st.expander("Distributions"):
-            plt.subplots(figsize=(11, 9))
-            diabetes_freq = sns.histplot(self.data, x="Diabetes", bins=2)
-            st.pyplot(diabetes_freq.get_figure())
 
-    def print_data(self):
-        st.table(self.data.head())
-        st.write(self.data.columns())
+            # DISTRIBUTION -- BASE MATPLOT
+            plt.figure(figsize=(15, 10))
+
+            i = 0  # Create an index to manage location
+            for column in self.data.columns:
+
+                # Skip all non-binary values
+                if column in ["BMI", "Age", "Income", "Education", "Poor General Health",
+                              "Poor Mental Health", "Poor Physical Health"]:
+                    continue
+
+                i = i + 1                                                   # Iterate
+                plt.subplot(6, 3, i)                                  # Place graph
+                plt.title(f"Distribution of {column} Data")                 # Title
+                little_plot = sns.histplot(self.data[column], bins=2)       # Create plot
+                plt.xticks(ticks=[0, 1], labels=[f"No {column}", column])   # Label axes
+
+                if column == "sex":                                         # Use different labels for sex
+                    plt.xticks(ticks=[0, 1], labels=["Female", "Male"])
+
+                plt.tight_layout(pad=1.0)                                   # Add padding between charts
+
+                if i == 15:
+                    st.pyplot(little_plot.get_figure())                     # Print the whole plot if it's the last one
