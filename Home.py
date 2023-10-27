@@ -112,4 +112,4 @@ st.button(label="Submit", on_click=model.predict_data, args=[attributes], type="
 # INFO POP-UP
 # ---
 
-st.info("Open the sidebar in the top left corner for some more information on the dataset and process!")
+st.info("Open the sidebar in the top left corner to see visualizations of the dataset")

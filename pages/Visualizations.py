@@ -1,7 +1,7 @@
 import streamlit as st
 from RegressionModel import RegressionModel
 
-st.write("Behind the Scenes Look")
+st.header("Visualizations")
 
 model = RegressionModel()
 

@@ -101,32 +101,46 @@ class RegressionModel:
 
         y_pred = classifier.predict(self.x_test)
 
-        # CONFUSION MATRIX
-        confusion = confusion_matrix(self.y_test, y_pred)
-        st.write(confusion)
-        st.write(accuracy_score(self.y_test, y_pred))
+        # DRAW CONFUSION MATRIX
+        with st.expander("Confusion Matrix on Test Data"):
+            # CONFUSION MATRIX -- BASE MATRIX
+            plt.subplots(figsize=(11, 9))                           # Create underyling matplot
+            confusion = confusion_matrix(self.y_test, y_pred)       # Create confusion matrix
+            cmap = sns.diverging_palette(230, 20, as_cmap=True)
+            plot = sns.heatmap(confusion, annot=True, fmt='d', cmap=cmap)    # Plot with Seaborn's heatmap
+
+            # CONFUSION MATRIX -- LABELS
+            plot.set_title("Diabetes Diagnosis: Actual Diagnosis vs. Predicted Diagnosis")  # Title the chart
+
+            plot.set_xlabel("Predicted Diagnosis")                  # Label the x-axis
+            plot.xaxis.set_ticklabels(["No diabetes", "Diabetes"])  # Label each x-axis option
+
+            plot.set_ylabel("Actual Diagnosis")                     # Label the y-axis
+            plot.yaxis.set_ticklabels(["No diabetes", "Diabetes"])  # Label each y-axis option
+
+            # CONFUSION MATRIX -- WRITE TO UI
+            st.pyplot(plot.get_figure())                            # Print matrix to frontend
+            st.write(accuracy_score(self.y_test, y_pred))           # Print the accuracy score value
 
     def draw_visualizations(self):
-        # Compute the correlation matrix
+        # DRAW CORRELATION MATRIX
         with st.expander("Correlation Matrix"):
-            corr = self.data.corr()
+            # CORRELATION MATRIX -- BASE MATRIX
+            plt.subplots(figsize=(11, 9))                                     # Create underlying matplot
+            corr = self.data.corr()                                           # Create correlation matrix
 
-            # Generate a mask for the upper triangle
-            mask = np.triu(np.ones_like(corr, dtype=bool))
+            # CORRELATION MATRIX -- STYLING
+            mask = np.triu(np.ones_like(corr, dtype=bool))              # Create mask for top right triangle
+            cmap = sns.diverging_palette(230, 20, as_cmap=True)  # Create custom color palette
 
-            # Set up the matplotlib figure
-            plt.subplots(figsize=(11, 9))
+            # CORRELATION MATRIX -- DRAW FINAL MATRIX
+            correlation_mat = sns.heatmap(corr, mask=mask, cmap=cmap,          # Draw the seaborn heatmap
+                                          center=0, linewidths=.5)
 
-            # Generate a custom diverging colormap
-            cmap = sns.diverging_palette(230, 20, as_cmap=True)
-
-            # Draw the heatmap with the mask and correct aspect ratio
-            correlation_mat = sns.heatmap(corr, mask=mask, cmap=cmap, vmax=.3, center=0,
-                                          square=True, linewidths=.5, cbar_kws={"shrink": .5})
-
-            # Write to display
+            # CORRELATION MATRIX -- WRITE TO UI
             st.pyplot(correlation_mat.get_figure())
 
+        # DRAW DISTRIBUTION CHARTS
         with st.expander("Distributions"):
             plt.subplots(figsize=(11, 9))
             diabetes_freq = sns.histplot(self.data, x="Diabetes", bins=2)
@@ -135,15 +149,3 @@ class RegressionModel:
     def print_data(self):
         st.table(self.data.head())
         st.write(self.data.columns())
-
-    def manual_test(self):
-        classifier = LogisticRegression()
-        classifier.fit(self.x_train, self.y_train)
-        prediction = classifier.predict([[0, 0, 0, 30, 0, 0, 0, 0, 0,
-                                          0, 0, 0, 0, 0, 0, 0, 0, 0,
-                                          3, 3, 3]])
-
-        if prediction == 0:
-            st.info("It is likely that this patient does not have pre-diabetes or diabetes")
-        else:
-            st.info("It is likely that this patient has either pre-diabetes or diabetes")
