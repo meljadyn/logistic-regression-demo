@@ -107,7 +107,7 @@ class RegressionModel:
             confusion = confusion_matrix(self.y_test, prediction)  # Create confusion matrix
             cmap = sns.diverging_palette(230, 20, as_cmap=True)  # Create custom colors
             plot = sns.heatmap(confusion, annot=True, fmt='d', cmap=cmap,
-                               linewidths=.5)  # Plot with Seaborn's heatmap
+                               linewidths=.5, vmin=0, vmax=0, cbar=False)     # Plot with Seaborn's heatmap
 
             # CONFUSION MATRIX -- LABELS
             plot.set_title("Diabetes Diagnosis: Actual Diagnosis vs. Predicted Diagnosis")  # Title the chart
@@ -180,10 +180,10 @@ class RegressionModel:
                            "Frequent Physical Activity", "Difficulty Walking",
                            "Age", "Income"]:
                 plt.subplots(figsize=(9, 5))  # Create underlying matplot
-
                 x_var, y_var = column, "Diabetes"  # Choose axes
-                gen_health_group = self.data.groupby(x_var)[y_var].value_counts(normalize=True).unstack(y_var)
-                bar_health = gen_health_group.plot.barh(stacked=True)  # Build bar plot
+                groups = self.data.groupby(x_var)[y_var].value_counts(normalize=True).unstack(y_var)
+                cmap = sns.diverging_palette(230, 20, as_cmap=True)  # Choose colours
+                bar_graph = groups.plot.barh(stacked=True, cmap=cmap)  # Build bar plot
 
                 # Labels for y-axis
                 if column == "Age":
@@ -220,7 +220,7 @@ class RegressionModel:
 
                 # Print
                 plt.tight_layout()
-                st.pyplot(bar_health.get_figure())
+                st.pyplot(bar_graph.get_figure())
 
                 # Print explanation for Poor General Health Scale
                 if column == "Poor General Health":
