@@ -44,7 +44,7 @@ with survey_col3:
     gen_health = st.slider("Personal ranking of general health, where 1 = excellent, 5 = poor", 1, 5)
     mental_health = st.slider("How many days out of the last 30 days where their mental health was poor", 0, 30)
     phys_health = st.slider("How many days out of the last 30 days where their physical health was poor", 0, 30)
-    diff_walk = st.checkbox("Has serious difficulty walking/climbing stairs")
+    diff_walk = st.checkbox("Has serious difficulty walking or climbing stairs")
 
 # Demographics
 with survey_col4:
@@ -91,7 +91,7 @@ with st.expander("Explain Demographic Scales"):
             "Level": [1, 2, 3, 4, 5, 6, 7, 8],
             "Income": ["$0 to less than $10k", "$10k to less than $15k", "$15k to less than $20k",
                        "$20k to less than $25k", "$25k to less than $35k", "$35k to less than $50k",
-                       "$35k to less than $75k", "$75k or more"]
+                       "$50k to less than $75k", "$75k or more"]
         }
 
         income_df = pd.DataFrame(income_chart)
