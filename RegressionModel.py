@@ -52,9 +52,9 @@ class RegressionModel:
             "Stroke": "History of Stroke",
             "HeartDiseaseorAttack": "History of Heart Disease",
             "PhysActivity": "Frequent Physical Activity",
-            "Fruits": "Eating Fruits",
-            "Veggies": "Eating Veggies",
-            "HvyAlcoholConsump": "Alcohol Consumption",
+            "Fruits": "Daily Fruits",
+            "Veggies": "Daily Veggies",
+            "HvyAlcoholConsump": "High Alcohol Consumption",
             "AnyHealthcare": "Health Insurance",
             "NoDocbcCost": "Inability to Afford Medical Care",
             "GenHlth": "Poor General Health",
@@ -162,8 +162,10 @@ class RegressionModel:
                 plt.title(f"Distribution of {column} Data")                 # Title
                 little_plot = sns.histplot(self.data[column], bins=2)       # Create plot
                 plt.xticks(ticks=[0, 1], labels=[f"No {column}", column])   # Label axes
+                plt.yticks(ticks=[0, 50000, 100000, 150000, 200000, 250000],
+                           labels=["0", "50k", "100k", "150k", "200k", "250k"])
 
-                if column == "sex":                                         # Use different labels for sex
+                if column == "Sex":                                         # Use different labels for sex
                     plt.xticks(ticks=[0, 1], labels=["Female", "Male"])
 
                 plt.tight_layout(pad=1.0)                                   # Add padding between charts
@@ -172,25 +174,39 @@ class RegressionModel:
                     st.pyplot(little_plot.get_figure())                     # Print the whole plot if it's the last one
 
         # DRAW PERCENTAGE GRAPHS
-        with st.expander("Percentage of Diabetics Exhibiting Attributes"):
-            for column in ["Poor General Health", "High Blood Pressure", "Frequent Physical Activity"]:
-                plt.subplots(figsize=(9, 5))                              # Create underlying matplot
+        with st.expander("Percentage of Diabetics and Non-Diabetics Exhibiting Specific Attributes"):
+            for column in ["Poor General Health", "High Blood Pressure",
+                           "Frequent Physical Activity", "Difficulty Walking",
+                           "Age"]:
+                plt.subplots(figsize=(9, 5))                    # Create underlying matplot
 
                 x_var, y_var = column, "Diabetes"                         # Choose axes
                 gen_health_group = self.data.groupby(x_var)[y_var].value_counts(normalize=True).unstack(y_var)
                 bar_health = gen_health_group.plot.barh(stacked=True)     # Build bar plot
 
-                # Labels
-                if not column == "Poor General Health":
-                    plt.yticks(ticks=[0,1], labels=[f"No {column}", column])
+                # Labels for y-axis
+                if column in ["Age"]:
+                    plt.yticks(
+                        ticks=[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12],
+                        labels=["Age 18 to 24", "Age 25 to 29", "Age 30 to 34", "Age 35 to 39", "Age 40 to 44",
+                                "Age 45 to 49", "Age 50 to 54", "Age 55 to 59", "Age 60 to 64", "Age 65 to 69",
+                                "Age 70 to 74", "Age 75 to 79", "Age 80 or older"],
+                    )
+                elif column in ["Poor General Health"]:
+                    plt.yticks(
+                        ticks=[0, 1, 2, 3, 4],
+                        labels=["1 (Excellent)", 2, 3, 4, "5 (Poor)"]
+                    )
+                else:
+                    plt.yticks(ticks=[0, 1], labels=[f"No {column}", column])
 
-                plt.xlabel("Percentage")
+                # Labels for x-axis
                 plt.title(f"Percentage of Responses Related to {column}, Separated by Diabetes Diagnosis")
+                plt.xlabel("Percentage")
+                plt.xticks(ticks=[0.2, 0.4, 0.6, 0.8, 1], labels=["20%", "40%", "60%", "80%", "100%"])
 
                 # Add legend
                 plt.legend(
-                    # bbox_to_anchor=(0.5, 1.02),
-                    # loc="right",
                     labels=["Not diabetic", "Diabetic"]
                 )
 
@@ -198,7 +214,7 @@ class RegressionModel:
                 plt.tight_layout()
                 st.pyplot(bar_health.get_figure())
 
-
-
-
-
+                # Print explanation for Poor General Health Scale
+                if column == "Poor General Health":
+                    st.write("* Note that individuals were asked to rate their general health on a scale from "
+                             "1 (excellent) to 5 (poor).")
