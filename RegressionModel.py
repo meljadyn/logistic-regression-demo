@@ -203,7 +203,7 @@ class RegressionModel:
                         ticks=[0, 1, 2, 3, 4, 5, 6, 7],
                         labels=["\$0 to \$10k", "\$10k to \$15k", "\$15k to \$20k",
                                 "\$20k to \$25k", "\$25k to \$35k", "\$35k to \$50k",
-                                "\$35k to \$75k", "\$75k or more"]
+                                "\$50k to \$75k", "\$75k or more"]
                     )
                 else:
                     plt.yticks(ticks=[0, 1], labels=[f"No {column}", column])
