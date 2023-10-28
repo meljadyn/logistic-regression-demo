@@ -33,7 +33,7 @@ with survey_col2:
     fruits = st.checkbox("Consumes fruits at least once a day")
     veggies = st.checkbox("Consumes vegetables at least once a day")
     smoker = st.checkbox("Smoked more than 100 cigarettes in lifetime")
-    alcohol = st.checkbox("Is a heavy drinker (14 drinks/week for men, 7 drinks/week for women")
+    alcohol = st.checkbox("Is a heavy drinker (14 drinks/week for men, 7 drinks/week for women)")
     healthcare = st.checkbox("Has any kind of health coverage or insurance")
     doc_cost = st.checkbox("There was a time in the last 12 months where a doctor was "
                            "needed but avoided for financial reasons")
@@ -49,7 +49,7 @@ with survey_col3:
 # Demographics
 with survey_col4:
     st.subheader("Demographics")
-    sex = st.checkbox("Male")
+    sex = st.radio("Sex at Birth", [0, 1], format_func=lambda x: ["Female", "Male"][x])
     age = st.number_input("13-level age category (see below)", 1, 13)
     edu = st.number_input("EDUCA education level (see below)", 1, 6)
     income = st.number_input("Income scale (see below)", 1, 8)
