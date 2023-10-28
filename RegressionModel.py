@@ -122,8 +122,7 @@ class RegressionModel:
             st.pyplot(plot.get_figure())  # Print matrix to frontend
             st.metric("Accuracy", format(accuracy_score(self.y_test, prediction), ".1%"))  # Print the accuracy percent
 
-    def draw_visualizations(self):
-        # DRAW CORRELATION MATRIX
+    def draw_correlation_matrix(self):
         with st.expander("Correlation Matrix"):
             # CORRELATION MATRIX -- BASE MATRIX
             plt.subplots(figsize=(11, 9))  # Create underlying matplot
@@ -143,6 +142,7 @@ class RegressionModel:
             # CORRELATION MATRIX -- WRITE TO UI
             st.pyplot(correlation_mat.get_figure())
 
+    def draw_distribution_graphs(self):
         # DRAW DISTRIBUTION CHARTS
         with st.expander("Distributions"):
 
@@ -157,45 +157,53 @@ class RegressionModel:
                               "Poor Mental Health", "Poor Physical Health"]:
                     continue
 
-                i = i + 1                                                   # Iterate
-                plt.subplot(6, 3, i)                                  # Place graph
-                plt.title(f"Distribution of {column} Data")                 # Title
-                little_plot = sns.histplot(self.data[column], bins=2)       # Create plot
-                plt.xticks(ticks=[0, 1], labels=[f"No {column}", column])   # Label axes
+                i = i + 1  # Iterate
+                plt.subplot(6, 3, i)  # Place graph
+                plt.title(f"Distribution of {column} Data")  # Title
+                little_plot = sns.histplot(self.data[column], bins=2)  # Create plot
+                plt.xticks(ticks=[0, 1], labels=[f"No {column}", column])  # Label axes
                 plt.yticks(ticks=[0, 50000, 100000, 150000, 200000, 250000],
                            labels=["0", "50k", "100k", "150k", "200k", "250k"])
 
-                if column == "Sex":                                         # Use different labels for sex
+                if column == "Sex":  # Use different labels for sex
                     plt.xticks(ticks=[0, 1], labels=["Female", "Male"])
 
-                plt.tight_layout(pad=1.0)                                   # Add padding between charts
+                plt.tight_layout(pad=1.0)  # Add padding between charts
 
                 if i == 15:
-                    st.pyplot(little_plot.get_figure())                     # Print the whole plot if it's the last one
+                    st.pyplot(little_plot.get_figure())  # Print the whole plot if it's the last one
 
+    def draw_percentage_graphs(self):
         # DRAW PERCENTAGE GRAPHS
         with st.expander("Percentage of Diabetics and Non-Diabetics Exhibiting Specific Attributes"):
             for column in ["Poor General Health", "High Blood Pressure",
                            "Frequent Physical Activity", "Difficulty Walking",
-                           "Age"]:
-                plt.subplots(figsize=(9, 5))                    # Create underlying matplot
+                           "Age", "Income"]:
+                plt.subplots(figsize=(9, 5))  # Create underlying matplot
 
-                x_var, y_var = column, "Diabetes"                         # Choose axes
+                x_var, y_var = column, "Diabetes"  # Choose axes
                 gen_health_group = self.data.groupby(x_var)[y_var].value_counts(normalize=True).unstack(y_var)
-                bar_health = gen_health_group.plot.barh(stacked=True)     # Build bar plot
+                bar_health = gen_health_group.plot.barh(stacked=True)  # Build bar plot
 
                 # Labels for y-axis
-                if column in ["Age"]:
+                if column == "Age":
                     plt.yticks(
                         ticks=[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12],
                         labels=["Age 18 to 24", "Age 25 to 29", "Age 30 to 34", "Age 35 to 39", "Age 40 to 44",
                                 "Age 45 to 49", "Age 50 to 54", "Age 55 to 59", "Age 60 to 64", "Age 65 to 69",
                                 "Age 70 to 74", "Age 75 to 79", "Age 80 or older"],
                     )
-                elif column in ["Poor General Health"]:
+                elif column == "Poor General Health":
                     plt.yticks(
                         ticks=[0, 1, 2, 3, 4],
                         labels=["1 (Excellent)", 2, 3, 4, "5 (Poor)"]
+                    )
+                elif column == "Income":
+                    plt.yticks(
+                        ticks=[0, 1, 2, 3, 4, 5, 6, 7],
+                        labels=["\$0 to \$10k", "\$10k to \$15k", "\$15k to \$20k",
+                                "\$20k to \$25k", "\$25k to \$35k", "\$35k to \$50k",
+                                "\$35k to \$75k", "\$75k or more"]
                     )
                 else:
                     plt.yticks(ticks=[0, 1], labels=[f"No {column}", column])
@@ -216,5 +224,5 @@ class RegressionModel:
 
                 # Print explanation for Poor General Health Scale
                 if column == "Poor General Health":
-                    st.write("* Note that individuals were asked to rate their general health on a scale from "
+                    st.write("Note that individuals were asked to rate their general health on a scale from "
                              "1 (excellent) to 5 (poor).")

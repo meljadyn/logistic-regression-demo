@@ -49,7 +49,7 @@ with survey_col3:
 # Demographics
 with survey_col4:
     st.subheader("Demographics")
-    sex = st.checkbox("Male")  # Make 0 female, 1 male
+    sex = st.checkbox("Male")
     age = st.number_input("13-level age category (see below)", 1, 13)
     edu = st.number_input("EDUCA education level (see below)", 1, 6)
     income = st.number_input("Income scale (see below)", 1, 8)
@@ -89,8 +89,9 @@ with st.expander("Explain Demographic Scales"):
 
         income_chart = {
             "Level": [1, 2, 3, 4, 5, 6, 7, 8],
-            "Income": ["Less than $10,000", "Less than $15,000", "Less than $20,000", "Less than $25,000",
-                       "Less than $35,000", "Less than $50,000", "Less than $75,000", "$75,000 or more"]
+            "Income": ["$0 to less than $10k", "$10k to less than $15k", "$15k to less than $20k",
+                       "$20k to less than $25k", "$25k to less than $35k", "$35k to less than $50k",
+                       "$35k to less than $75k", "$75k or more"]
         }
 
         income_df = pd.DataFrame(income_chart)
