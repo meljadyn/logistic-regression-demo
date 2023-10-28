@@ -29,7 +29,7 @@ with survey_col1:
 # Habits and Activities
 with survey_col2:
     st.subheader("Habits and Activities")
-    phys_activity = st.checkbox("Has been physically active in the last 30 days -- not job-related")
+    phys_activity = st.checkbox("Has been physically active in the last 30 days — not job-related")
     fruits = st.checkbox("Consumes fruits at least once a day")
     veggies = st.checkbox("Consumes vegetables at least once a day")
     smoker = st.checkbox("Smoked more than 100 cigarettes in lifetime")
