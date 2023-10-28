@@ -51,7 +51,7 @@ class RegressionModel:
             "Smoker": "History of Smoking",
             "Stroke": "History of Stroke",
             "HeartDiseaseorAttack": "History of Heart Disease",
-            "PhysActivity": "Physical Activity",
+            "PhysActivity": "Frequent Physical Activity",
             "Fruits": "Eating Fruits",
             "Veggies": "Eating Veggies",
             "HvyAlcoholConsump": "Alcohol Consumption",
@@ -170,3 +170,35 @@ class RegressionModel:
 
                 if i == 15:
                     st.pyplot(little_plot.get_figure())                     # Print the whole plot if it's the last one
+
+        # DRAW PERCENTAGE GRAPHS
+        with st.expander("Percentage of Diabetics Exhibiting Attributes"):
+            for column in ["Poor General Health", "High Blood Pressure", "Frequent Physical Activity"]:
+                plt.subplots(figsize=(9, 5))                              # Create underlying matplot
+
+                x_var, y_var = column, "Diabetes"                         # Choose axes
+                gen_health_group = self.data.groupby(x_var)[y_var].value_counts(normalize=True).unstack(y_var)
+                bar_health = gen_health_group.plot.barh(stacked=True)     # Build bar plot
+
+                # Labels
+                if not column == "Poor General Health":
+                    plt.yticks(ticks=[0,1], labels=[f"No {column}", column])
+
+                plt.xlabel("Percentage")
+                plt.title(f"Percentage of Responses Related to {column}, Separated by Diabetes Diagnosis")
+
+                # Add legend
+                plt.legend(
+                    # bbox_to_anchor=(0.5, 1.02),
+                    # loc="right",
+                    labels=["Not diabetic", "Diabetic"]
+                )
+
+                # Print
+                plt.tight_layout()
+                st.pyplot(bar_health.get_figure())
+
+
+
+
+
