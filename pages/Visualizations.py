@@ -6,11 +6,11 @@ st.header("Visualizations")
 loading = st.progress(0, text="Loading up the dataset")
 model = RegressionModel()
 
-loading.progress(10, text="Drawing correlation matrix")
+loading.progress(20, text="Drawing correlation matrix")
 model.draw_correlation_matrix()
 
 loading.progress(40, text="Drawing distribution graphs")
-model.draw_distribution_graphs()
+model.draw_distribution_graphs(loading)
 
 loading.progress(70, text="Drawing percentage-based graphs")
 model.draw_percentage_graphs()

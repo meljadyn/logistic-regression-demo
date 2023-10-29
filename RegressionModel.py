@@ -103,14 +103,14 @@ class RegressionModel:
         # DRAW CONFUSION MATRIX
         with st.expander("Confusion Matrix on Test Data"):
             # CONFUSION MATRIX -- BASE MATRIX
-            plt.subplots(figsize=(11, 9))  # Create underlying matplot
+            plt.subplots(figsize=(4, 4))  # Create underlying matplot
             confusion = confusion_matrix(self.y_test, prediction)  # Create confusion matrix
             cmap = sns.diverging_palette(230, 20, as_cmap=True)  # Create custom colors
             plot = sns.heatmap(confusion, annot=True, fmt='d', cmap=cmap,
                                linewidths=.5, vmin=0, vmax=0, cbar=False)     # Plot with Seaborn's heatmap
 
             # CONFUSION MATRIX -- LABELS
-            plot.set_title("Diabetes Diagnosis: Actual Diagnosis vs. Predicted Diagnosis")  # Title the chart
+            plot.set_title("Confusion Matrix:\nActual Diagnosis vs. Predicted Diagnosis")  # Title the chart
 
             plot.set_xlabel("Predicted Diagnosis")  # Label the x-axis
             plot.xaxis.set_ticklabels(["No diabetes", "Diabetes"])  # Label each x-axis option
@@ -142,7 +142,7 @@ class RegressionModel:
             # CORRELATION MATRIX -- WRITE TO UI
             st.pyplot(correlation_mat.get_figure())
 
-    def draw_distribution_graphs(self):
+    def draw_distribution_graphs(self, loading):
         # DRAW DISTRIBUTION CHARTS
         with st.expander("Distributions"):
 
@@ -156,6 +156,8 @@ class RegressionModel:
                 if column in ["BMI", "Age", "Income", "Education", "Poor General Health",
                               "Poor Mental Health", "Poor Physical Health"]:
                     continue
+
+                loading.progress(40 + i, "Drawing distribution graphs")  # Update loading bar
 
                 i = i + 1  # Iterate
                 plt.subplot(6, 3, i)  # Place graph
