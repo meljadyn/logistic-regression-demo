@@ -99,7 +99,7 @@ with st.expander("Explain Demographic Scales"):
 
 
 # ---
-# CALL REGRESSION MODEL
+# CALL CLASSIFICATION MODEL
 # ---
 
 attributes = [high_bp, high_chol, chol_check, bmi, smoker, stroke, heart_disease, phys_activity, fruits,
