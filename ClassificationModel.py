@@ -9,7 +9,7 @@ from sklearn.metrics import confusion_matrix, accuracy_score
 from sklearn.preprocessing import StandardScaler
 
 
-class RegressionModel:
+class ClassificationModel:
     def __init__(self):
         # Load data in
         self.data = pd.read_csv("data/diabetes_binary_health_indicators.csv")

@@ -1,10 +1,10 @@
 import streamlit as st
-from RegressionModel import RegressionModel
+from ClassificationModel import ClassificationModel
 
 st.header("Visualizations")
 
 loading = st.progress(0, text="Loading up the dataset")
-model = RegressionModel()
+model = ClassificationModel()
 
 loading.progress(20, text="Drawing correlation matrix")
 model.draw_correlation_matrix()

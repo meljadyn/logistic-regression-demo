@@ -1,6 +1,6 @@
 import streamlit as st
 import pandas as pd
-from RegressionModel import RegressionModel
+from ClassificationModel import ClassificationModel
 
 
 # ---
@@ -106,7 +106,7 @@ attributes = [high_bp, high_chol, chol_check, bmi, smoker, stroke, heart_disease
               veggies, alcohol, healthcare, doc_cost, gen_health, mental_health, phys_health, diff_walk, sex,
               age, edu, income]
 
-model = RegressionModel()
+model = ClassificationModel()
 st.button(label="Submit", on_click=model.predict_data, args=[attributes], type="primary", use_container_width=True)
 
 # ---
