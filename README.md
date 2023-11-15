@@ -1,5 +1,7 @@
 # Logistic Regression Application
 
+See the live application here: https://logistic-regression-healthcare-solution.streamlit.app/
+
 This project uses a dataset on individuals with and without diagnosed diabetes and uses a 
 linear regression machine learning model to predict whether an individual has diabetes. 
 
